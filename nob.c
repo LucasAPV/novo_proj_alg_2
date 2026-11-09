@@ -12,7 +12,11 @@ int main(int argc, char **argv)
 
 
    /* Para colocar mais arquivos, basta coloca os nomes deles em cada string */
-   cmd_append(&cmd, "cc", "-Wall", "-Wextra", "-o", OUTPUT_FOLDER"main", "main.c" /*Mais arquivos aqui*/);
+   cmd_append(
+      &cmd, "gcc", "-Wall", "-Wextra",
+      "-Iincludes" , "-o", OUTPUT_FOLDER"main", 
+      "main.c", "./utilitaries/error.c", "adventure.c", "item.c" /*Mais arquivos aqui*/
+   );
    if (!cmd_run(&cmd)) return 1;
 
    return 0;
