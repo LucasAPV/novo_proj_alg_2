@@ -22,7 +22,7 @@ void* create_character(Character *c, CharacterDB *c_db) {
    transaction.id = c_db->curr_id;
    
    printf("Digite o nome para o personagem: \n");
-   fgets(transaction.name, sizeof(transaction.name), stdin);
+   scanf("%s", transaction.name);
    
    printf("Selecione a raça do personagem: \n");
    int opt;
@@ -69,7 +69,7 @@ void* create_character(Character *c, CharacterDB *c_db) {
    transaction.power = opt;
 
    transaction.inventory.curr_ocupied_space = 0; 
-   
+   transaction.inventory.free_index = 0;
    *c = transaction;
    c_db->chars[c->id] = *c;
    c_db->curr_id += 1;
@@ -105,6 +105,19 @@ void* print_character(Character c) {
    return OKAY;
 }
 
+void* print_inventory(Character c){
+   if (c.id < 0 || c.id >= 20 || c.level == 0) {
+      return NULL;
+   }
+
+   for(int i = 0; i < MAX_CAPACITY; ++i){
+      if(strcmp(c.inventory.itens[i].name, "") == 0) continue;
+      print_item(c.inventory.itens[i]);
+   }
+
+   return OKAY;
+}
+
 /*
    [TODO]
    title="FUNCAO DE EQUIPAR E TROCAR"
@@ -121,6 +134,15 @@ void* print_character(Character c) {
    [\TODO]
 */
 
+void* put_in_bag(Character *c, Item it){
+   if(c->inventory.curr_ocupied_space > MAX_CAPACITY && it.occupied_space + c->inventory.curr_ocupied_space > MAX_CAPACITY) return NULL;
+
+   c->inventory.itens[c->inventory.free_index] = it;
+   c->inventory.free_index += 1;
+   
+   return OKAY;
+}
+
 Item* get_equipment_slot(Character *c, int type_item, int hand) {
    switch (type_item) {
       case HELMET:     return &(c->items_in_body.head);
@@ -134,7 +156,8 @@ Item* get_equipment_slot(Character *c, int type_item, int hand) {
       
       case ONE_HAND_SWORD:
       case SHIELD:
-         return (hand == 0) ? &(c->items_in_body.left_hand) : &(c->items_in_body.right_hand);
+         return (hand == 0) ? &(c->items_in_body.left_hand)  : 
+               ((hand == 1) ? &(c->items_in_body.right_hand) : NULL) ;
          
       case TWO_HAND_SWORD:
          return &(c->items_in_body.left_hand); // O slot principal para armas de duas mãos
@@ -172,12 +195,13 @@ void* switch_items(int id_item_to_equip, Character *c, int hand) {
 }
 
 // Função para equipar o item
-void* equip_item(int id, Character *c, int hand) {
-   if (id < 0 || id >= MAX_CAPACITY) {
+void* equip_item(int id_item, Character *c, int hand) {
+   if (id_item < 0 || id_item >= MAX_CAPACITY) {
       return NULL;
    }
 
-   Item i = c->inventory.itens[id];
+   Item i = c->inventory.itens[id_item];
+   print_item(i);
    Item *target_slot = get_equipment_slot(c, i.type_item, hand);
 
    if (!target_slot) {
@@ -186,14 +210,14 @@ void* equip_item(int id, Character *c, int hand) {
 
     // Se o slot já estiver ocupado (assumindo type_item != 0 como ocupado), fazemos a troca
    if (target_slot->type_item != 0) {
-      if (switch_items(id, c, hand) != OKAY) {
+      if (switch_items(id_item, c, hand) != OKAY) {
             log_error(UNABLE_TO_SWITCH_ITENS);
             return NULL;
       }
    } else {
         // Slot vazio: apenas movemos para o corpo e removemos do inventário
         *target_slot = i;
-        c->inventory.itens[id] = (Item){0}; // Limpa o slot do inventário (ou marca como vazio)
+        c->inventory.itens[id_item] = (Item){0}; // Limpa o slot do inventário (ou marca como vazio)
    }
 
    return OKAY;

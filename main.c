@@ -7,21 +7,18 @@
 
 int main(void) {
    
-   // CharacterDB c_db = {0};
-   // Character c = {0};
+   CharacterDB c_db = {0};
+   Character c = {0};
+   Item it = {0};   
    
-   // if(create_character(&c, &c_db) != OKAY){
-   //    log_error(INVALID_ENTRY);
-   // }
+   if(create_item(&it) != OKAY) log_error(INVALID_ENTRY);
+   
+   if(create_character(&c, &c_db) != OKAY) log_error(INVALID_ENTRY);
 
-   // if(print_character(c) != OKAY){
-   //    log_error(INEXISTENT_OBJECT);
-   // }
+   if(put_in_bag(&c, it) != OKAY) log_error(NOT_ENOUGH_SPACE);
 
-   Item it = {0};
+   if(equip_item(0, &c, 0) != OKAY) log_error(INVALID_ARRAY_POSITION);
 
-   if(create_item(&it) != OKAY) { log_error(INVALID_ENTRY); }
-
-   print_item(it);
+   if (print_inventory(c) != OKAY) log_error(INVALID_ARRAY_POSITION);
    return 0;
 }

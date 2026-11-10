@@ -47,6 +47,7 @@ typedef struct {
    union{
       Item itens[MAX_CAPACITY];
       int curr_ocupied_space;
+      int free_index;
    } inventory;
 
    BodyPartItem items_in_body;
@@ -61,10 +62,11 @@ typedef struct {
 void* create_character(Character *c, CharacterDB *c_db);
 void* select_character_by_id(int id, CharacterDB *c_db);
 void* print_character(Character c);
-void* put_item_in_bag(Item i);
-void* equip_item(int id, Character *c, int hand);
+void* put_in_bag(Character *c, Item it);
+void* equip_item(int id_item, Character *c, int hand);
 void* switch_items(int id_item_to_equip, Character *c, int hand);
 Item* get_equipment_slot(Character *c, int type_item, int hand);
 void print_races();
 void print_classes();
+void* print_inventory(Character c);
 #endif

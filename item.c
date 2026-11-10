@@ -20,7 +20,7 @@ void print_item_types() {
 void* create_item(Item *it) {
    Item transaction = {0};
    printf("Digite o nome para o item: \n");
-   fgets(transaction.name, sizeof(transaction.name), stdin);
+   scanf("%s", transaction.name);
    
    int opt = 0;
    printf("Escolha o tipo para o item: \n");
