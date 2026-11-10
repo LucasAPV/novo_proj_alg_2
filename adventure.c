@@ -17,7 +17,7 @@ void print_classes(){
    printf("%d - classe CLERIC\n", CLERIC);
 }
 
-void* create_character(Character *c, CharacterDB *c_db) {
+void* create_character(CharacterDB *c_db) {
    Character transaction = {0};
    transaction.id = c_db->curr_id;
    
@@ -70,8 +70,7 @@ void* create_character(Character *c, CharacterDB *c_db) {
 
    transaction.inventory.curr_ocupied_space = 0; 
    transaction.inventory.free_index = 0;
-   *c = transaction;
-   c_db->chars[c->id] = *c;
+   c_db->chars[transaction.id] = transaction;
    c_db->curr_id += 1;
 
    return OKAY;
@@ -85,7 +84,8 @@ void* select_character_by_id(int id, CharacterDB *c_db){
    
 }
 
-void* print_character(Character c) {
+void* print_character(int id, CharacterDB c_db) {
+   Character c = c_db.chars[id];
    if (c.id < 0 || c.id >= 20 || c.level == 0) {
       return NULL;
    }
@@ -105,7 +105,8 @@ void* print_character(Character c) {
    return OKAY;
 }
 
-void* print_inventory(Character c){
+void* print_inventory(int id, CharacterDB c_db){
+   Character c = c_db.chars[id];
    if (c.id < 0 || c.id >= 20 || c.level == 0) {
       return NULL;
    }

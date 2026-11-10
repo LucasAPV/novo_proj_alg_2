@@ -7,5 +7,6 @@
 #define NAME_LENGHT 49
 #define MAX_CHARACTERS 20
 #define MAX_CAPACITY 50
+#define TEXT_LENGTH 100
 
 #endif
