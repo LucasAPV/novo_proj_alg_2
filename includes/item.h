@@ -30,7 +30,12 @@ typedef struct
    int power_bonus;
 }Item;
 
-void* create_item(Item *it);
+typedef struct {
+   Item itens[MAX_CAPACITY];
+   int curr_id;
+} ItemDB;
+
+void* create_item(Item *it, ItemDB *i_db);
 void print_item_types();
 void print_item(Item it);
 #endif

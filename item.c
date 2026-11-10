@@ -17,8 +17,12 @@ void print_item_types() {
    printf("%d - SHIELD \n"        , SHIELD);
 }
 
-void* create_item(Item *it) {
+void* create_item(Item *it, ItemDB *i_db) {
    Item transaction = {0};
+
+   transaction.id = i_db->curr_id;
+   i_db->curr_id += 1;
+
    printf("Digite o nome para o item: \n");
    scanf("%s", transaction.name);
    
@@ -63,6 +67,7 @@ void* create_item(Item *it) {
 
    memcpy(it, &transaction, sizeof(Item));
 
+   i_db->itens[it->id] = *it;
    return OKAY;
 }
 
