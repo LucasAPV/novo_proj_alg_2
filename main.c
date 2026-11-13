@@ -22,9 +22,9 @@ void actions_for_characters(CharacterDB *c_db, ItemDB *i_db) {
             scanf("%d", &id);
             printf("\n");
             print_character(id, *c_db);
-            break;
-         }
+         break;
    }
+}
 }
 
 int main(void) {
