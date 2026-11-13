@@ -44,7 +44,7 @@ typedef struct {
    int iniciative; // -5 -- 20
    int power; // 1 -- 100
    
-   union{
+   struct{
       Item itens[MAX_CAPACITY];
       int curr_ocupied_space;
       int free_index;

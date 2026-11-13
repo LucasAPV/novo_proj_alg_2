@@ -24,7 +24,7 @@ void* create_item(Item *it, ItemDB *i_db) {
    i_db->curr_id += 1;
 
    printf("Digite o nome para o item: \n");
-   scanf("%s", transaction.name);
+   scanf(" %[^\n]", transaction.name);
    
    int opt = 0;
    printf("Escolha o tipo para o item: \n");

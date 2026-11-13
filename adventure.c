@@ -22,7 +22,7 @@ void* create_character(CharacterDB *c_db) {
    transaction.id = c_db->curr_id;
    
    printf("Digite o nome para o personagem: \n");
-   scanf("%s", transaction.name);
+   scanf(" %[^\n]", transaction.name);
    
    printf("Selecione a raça do personagem: \n");
    int opt;

@@ -28,7 +28,7 @@ int character_area() {
    char opcoes[][TEXT_LENGTH] = {
       "Sair\0",
       "Criar um personagem\0",
-      "Listar um persoangem\0",
+      "Listar um personagem\0",
       "Listar inventario de um personagem\0",
       "Equipar item do inventário\0",
       "Trocar item equipado por um do inventario\0"
@@ -36,6 +36,23 @@ int character_area() {
 
    create_title("AREA DOS PERSONAGENS");
    create_options(opcoes, 6);
+
+   scanf("%d", &opt);
+
+   return opt;
+}
+
+int item_area() {
+   int opt = 0;
+   char opcoes[][TEXT_LENGTH] = {
+      "Sair",
+      "Criar um item",
+      "Consultar um item por ID",
+      "Adicionar item ao inventario de um personagem"
+   };
+
+   create_title("AREA DOS ITENS");
+   create_options(opcoes, 4);
 
    scanf("%d", &opt);
 
