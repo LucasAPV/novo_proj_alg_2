@@ -38,4 +38,7 @@ typedef struct {
 void* create_item(Item *it, ItemDB *i_db);
 void print_item_types();
 void print_item(Item it);
+void print_all_items(ItemDB i_db);
+void* update_item(int id, ItemDB *i_db);
+void* remove_item_from_db(int id, ItemDB *i_db);
 #endif
