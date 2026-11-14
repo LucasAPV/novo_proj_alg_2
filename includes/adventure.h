@@ -7,7 +7,8 @@ typedef enum {
    HUMAN,
    ELF, 
    DWARF, 
-   HALFLING
+   HALFLING,
+   END_RACE
 } Race;
 
 
@@ -15,7 +16,8 @@ typedef enum {
    WARRIOR,
    ROUGUE, 
    MAGE, 
-   CLERIC
+   CLERIC,
+   END_CLASS
 } Class;
 
 typedef struct {
@@ -68,5 +70,14 @@ void* switch_items(int id_item_to_equip, Character *c, int hand);
 Item* get_equipment_slot(Character *c, int type_item, int hand);
 void print_races();
 void print_classes();
+void* unequip_item(Character *c, int type_item, int hand);
+void print_equipped_items(Character c);
+void calculate_total_attributes(Character c);
 void* print_inventory(int id, CharacterDB c_db);
+int get_inventory_occupation(const Character *c);
+void remove_item_from_inventory(Character *c, int index);
+void print_all_characters(CharacterDB c_db);
+void* update_character(int id, CharacterDB *c_db);
+void* remove_character(int id, CharacterDB *c_db);
+void* drop_item_from_inventory(Character *c, int index);
 #endif
