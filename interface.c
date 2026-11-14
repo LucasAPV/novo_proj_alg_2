@@ -1,4 +1,5 @@
 #include "interface.h"
+#include "includes/definitions.h"
 
 void create_title (char* title) {
    printf("\n\n ====== %s ====== \n\n", title);
@@ -25,28 +26,18 @@ int create_initial_menu() {
 
 int character_area() {
    int opt = 0;
-<<<<<<< HEAD
    char opcoes[][TEXT_SIZE] = {
-      "Sair\0",
-      "Criar um personagem\0",
-      "Listar um persoangem\0",
-      "Listar inventario de um personagem\0",
-      "Equipar item do inventário\0",
-      "Trocar item equipado por um do inventario\0"
-=======
-   char opcoes[][TEXT_LENGTH] = {
-      "Encerrar",                     
-      "Cadastrar personagem",        
-      "Consultar personagem por ID", 
-      "Alterar personagem",          
-      "Remover personagem",          
-      "Listar personagens",          
-      "Administrar inventario",      
-      "Consultar equipamentos",      
-      "Equipar item",                
-      "Desequipar item",             
-      "Exibir atributos totais"      
->>>>>>> eafc00424384ca135115fbe1d2a8d87499e2eae6
+      "Encerrar",
+      "Cadastrar personagem",
+      "Consultar personagem por ID",
+      "Alterar personagem",
+      "Remover personagem",
+      "Listar personagens",
+      "Administrar inventario",
+      "Consultar equipamentos",
+      "Equipar item",
+      "Desequipar item",
+      "Exibir atributos totais"
    };
 
    create_title("AREA DOS PERSONAGENS");
@@ -59,7 +50,7 @@ int character_area() {
 
 int item_area() {
    int opt = 0;
-   char opcoes[][TEXT_LENGTH] = {
+   char opcoes[][TEXT_SIZE] = {
       "Sair",
       "Criar um item",
       "Consultar um item por ID",
