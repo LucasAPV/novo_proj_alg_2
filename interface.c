@@ -5,7 +5,7 @@ void create_title (char* title) {
 }
 
 
-void create_options(char options[][TEXT_LENGTH], int num_options) {
+void create_options(char options[][TEXT_SIZE], int num_options) {
    for(int i = 0; i < num_options; ++i){
       printf("%d - %s\n", i, options[i]);
    }
@@ -25,7 +25,7 @@ int create_initial_menu() {
 
 int character_area() {
    int opt = 0;
-   char opcoes[][TEXT_LENGTH] = {
+   char opcoes[][TEXT_SIZE] = {
       "Sair\0",
       "Criar um personagem\0",
       "Listar um persoangem\0",

@@ -14,8 +14,9 @@ int main(int argc, char **argv)
    /* Para colocar mais arquivos, basta coloca os nomes deles em cada string */
    cmd_append(
       &cmd, "gcc", "-Wall", "-Wextra",
-      "-Iincludes" , "-o", OUTPUT_FOLDER"main", 
-      "main.c", "./utilitaries/error.c", "adventure.c", "item.c", "interface.c" /*Mais arquivos aqui*/
+      "-Iincludes" , "-o", OUTPUT_FOLDER"main",
+      "main.c", "./utilitaries/error.c", "adventure.c", "item.c", "interface.c",
+      "beast.c", "./utilitaries/parse_file.c", "./utilitaries/read_txt.c" /*Mais arquivos aqui*/
    );
    if (!cmd_run(&cmd)) return 1;
 

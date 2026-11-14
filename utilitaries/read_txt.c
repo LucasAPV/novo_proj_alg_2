@@ -1,5 +1,7 @@
 #include "read_txt.h"
 #include "definitions.h"
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 FILE* open_file(char* file_name, char* mode){
@@ -9,130 +11,88 @@ FILE* open_file(char* file_name, char* mode){
 }
 
 /*
-   Estou passando a responsabilidade de free do arquivo para o caller desta funcao,
-   ou seja, quem chama tem que liberar o arquivo depois.
+   Le o arquivo POR LINHAS e devolve um vetor de strings terminado em NULL.
 
-   Alem do mais, acredito que se for passar o intervalo [a,a] ele pega a linha a
+   intervalo = {linha_inicial, linha_final}, ambos INCLUSIVOS e contados a partir de 0
+   (entao [a,a] devolve so a linha a). Se intervalo == NULL, devolve o arquivo todo.
+
+   (A versao anterior tratava o intervalo como BYTES no fseek/fread, mas o
+   next_beast_definition passava numeros de linhas - por isso nao funcionava.)
+
+   Responsabilidade de liberar: quem chama deve usar free_file_text() no retorno
+   e fclose() no arquivo.
+
+   Obs.: linhas maiores que LINE_BUFFER_SIZE-1 caracteres seriam quebradas em duas.
 */
-
 char** get_file_text(FILE *f, const int intervalo[2]) {
     if (f == NULL) return NULL;
 
-    char *buffer = NULL;
-    long size_to_read = 0;
+    int start = 0;
+    int end = -1;               /* -1 = ate o fim do arquivo */
 
     if (intervalo != NULL) {
-        int start = intervalo[0];
-        int end = intervalo[1];
-
-        if (end < start) return NULL;
-        fseek(f, start, SEEK_SET);
-        size_to_read = end - start;
-
-        buffer = (char *)malloc(size_to_read + 1);
-        if (buffer == NULL) return NULL;
-
-        size_t been_read = fread(buffer, 1, size_to_read, f);
-        buffer[been_read] = '\0';
-    } else {
-        fseek(f, 0, SEEK_END);
-        long tamanho_total = ftell(f);
-        rewind(f);
-
-        buffer = (char *)malloc(tamanho_total + 1);
-        if (buffer == NULL) return NULL;
-
-        size_t lidos = fread(buffer, 1, tamanho_total, f);
-        buffer[lidos] = '\0';
+        start = intervalo[0];
+        end = intervalo[1];
+        if (start < 0 || end < start) return NULL;
     }
 
-    // 1. Conta o número de linhas no buffer
-    int num_lines = 0;
-    for (int i = 0; buffer[i] != '\0'; i++) {
-        if (buffer[i] == '\n') {
-            num_lines++;
-        }
-    }
-    // Se o buffer não estiver vazio e o último caractere não for '\n', conta a última linha
-    if (buffer[0] != '\0' && buffer[strlen(buffer) - 1] != '\n') {
-        num_lines++;
-    }
+    rewind(f);
 
-    // Se o arquivo estiver vazio
-    if (num_lines == 0) {
-        free(buffer);
-        // Retorna um vetor contendo apenas NULL
-        char **empty_lines = (char **)malloc(sizeof(char *));
-        if (empty_lines) empty_lines[0] = NULL;
-        return empty_lines;
-    }
+    int capacity = 64;
+    int count = 0;
+    char **lines = (char **)malloc((capacity + 1) * sizeof(char *));
+    if (lines == NULL) return NULL;
 
-    // 2. Aloca o vetor de ponteiros para as strings (+1 para o ponteiro NULL no final)
-    char **lines = (char **)malloc((num_lines + 1) * sizeof(char *));
-    if (lines == NULL) {
-        free(buffer);
-        return NULL;
-    }
+    char buffer[LINE_BUFFER_SIZE];
+    int line_no = 0;
 
-    // 3. Separa o buffer em linhas individuais
-    int line_idx = 0;
-    char *cursor = buffer;
-    char *next_newline = NULL;
+    while (fgets(buffer, sizeof(buffer), f) != NULL) {
+        if (end >= 0 && line_no > end) break;
 
-    while ((next_newline = strchr(cursor, '\n')) != NULL) {
-        size_t line_len = next_newline - cursor;
+        if (line_no >= start) {
+            /* Remove '\n' e '\r' (arquivos CRLF do Windows) */
+            buffer[strcspn(buffer, "\r\n")] = '\0';
 
-        lines[line_idx] = (char *)malloc(line_len + 1);
-        if (lines[line_idx] == NULL) {
-            // Em caso de falha, limpa tudo o que já foi alocado para evitar vazamento de memória
-            for (int j = 0; j < line_idx; j++) free(lines[j]);
-            free(lines);
-            free(buffer);
-            return NULL;
-        }
-
-        memcpy(lines[line_idx], cursor, line_len);
-        
-        // Remove o '\r' caso o arquivo venha de sistemas Windows (CRLF)
-        if (line_len > 0 && lines[line_idx][line_len - 1] == '\r') {
-            lines[line_idx][line_len - 1] = '\0';
-        } else {
-            lines[line_idx][line_len] = '\0';
-        }
-
-        line_idx++;
-        cursor = next_newline + 1;
-    }
-
-    // Trata a última linha caso o arquivo não termine com '\n'
-    if (*cursor != '\0') {
-        size_t line_len = strlen(cursor);
-        lines[line_idx] = (char *)malloc(line_len + 1);
-        if (lines[line_idx] != NULL) {
-            strcpy(lines[line_idx], cursor);
-            // Remove '\r' se houver
-            size_t len = strlen(lines[line_idx]);
-            if (len > 0 && lines[line_idx][len - 1] == '\r') {
-                lines[line_idx][len - 1] = '\0';
+            if (count == capacity) {
+                capacity *= 2;
+                char **tmp = (char **)realloc(lines, (capacity + 1) * sizeof(char *));
+                if (tmp == NULL) {
+                    lines[count] = NULL;
+                    free_file_text(lines);
+                    return NULL;
+                }
+                lines = tmp;
             }
-            line_idx++;
+
+            size_t len = strlen(buffer);
+            char *copy = (char *)malloc(len + 1);
+            if (copy == NULL) {
+                lines[count] = NULL;
+                free_file_text(lines);
+                return NULL;
+            }
+            memcpy(copy, buffer, len + 1);
+            lines[count++] = copy;
         }
+        line_no++;
     }
 
-    // Marca o fim do vetor de strings com NULL
-    lines[line_idx] = NULL;
-
-    // O buffer temporário não é mais necessário, pois copiamos os dados para as linhas
-    free(buffer);
-
+    lines[count] = NULL;
     return lines;
+}
+
+void free_file_text(char **lines) {
+    if (lines == NULL) return;
+    for (int i = 0; lines[i] != NULL; i++) free(lines[i]);
+    free(lines);
 }
 
 
 ColValue line_to_struct(char* col_buffer, char* value_buffer) {
-   ColValue cv = {0};
+   ColValue cv;
+   memset(&cv, 0, sizeof(cv));
    cv.value = value_buffer;
-   cv.col_name = (ColumnBeast)-1; // Caso nao ache
+   cv.col_name = COLUMN_UNKNOWN; // Caso nao ache
 
    // Calcula size da tabela
    size_t num_maps = sizeof(COLUMN_MAPS) / sizeof(COLUMN_MAPS[0]);
@@ -148,26 +108,29 @@ ColValue line_to_struct(char* col_buffer, char* value_buffer) {
    return cv;
 }
 
+/*
+   "nome=Gargula" => col_name = NOME, value = "Gargula"
+
+   O value aponta para DENTRO da propria linha (logo depois do primeiro '='),
+   entao nao ha malloc nem free. Ele so vale enquanto a linha existir
+   (isto e, ate o free_file_text).
+   Linhas sem '=' (ex.: "[MONSTRO]") voltam com COLUMN_UNKNOWN.
+*/
 ColValue parse_line(char* line){
-ColValue cv = {0};
-char* col_buffer = (char*)malloc(sizeof(char)*TEXT_SIZE);
-char* value_buffer = (char*)malloc(sizeof(char)*TEXT_SIZE);
-int found_separator = 0;
-int counter = 0;
+    char col_buffer[TEXT_SIZE];
+    ColValue cv;
+    memset(&cv, 0, sizeof(cv));
+    cv.col_name = COLUMN_UNKNOWN;
+    cv.value = (char*)"";
 
-for(int i = 0; i < TEXT_SIZE; ++i){
-    if(strcmp(&line[i], "\0") == 0) break;
+    char* eq = strchr(line, '=');
+    if (eq == NULL) return cv;
 
-    if(strcmp(&line[i], "=") == 0) found_separator = 1;
+    size_t col_len = (size_t)(eq - line);
+    if (col_len >= TEXT_SIZE) return cv;
 
-    if(found_separator == 0) {
-        col_buffer[i] = line[i];
-    } else {
-        value_buffer[counter] = line[i];
-        counter++;
-    }
-}
-cv = line_to_struct(col_buffer,value_buffer);
+    memcpy(col_buffer, line, col_len);
+    col_buffer[col_len] = '\0';
 
-return cv;
+    return line_to_struct(col_buffer, eq + 1);
 }

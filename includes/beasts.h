@@ -2,29 +2,95 @@
 #define __BEASTS__
 
 #include "definitions.h"
+#include <stdint.h>
 
-typedef enum    {} Freq;
-typedef enum    {
+typedef enum {
+    FREQ_MUITO_RARO,
+    FREQ_RARO,
+    FREQ_INCOMUM,
+    FREQ_COMUM
+} Freq;
+
+typedef enum {
     QUALQUER_HORARIO,
     DIURNO,
     NOTURNO
 } Active;
 
-typedef struct  {
+typedef enum {
+    ONIVORO,
+    CARNIVORO,
+    HERBIVORO,
+    PARASITA,
+    NAO_SE_ALIMENTA
+} Dieta;
+
+typedef enum {
+    CAOTICO,
+    LEAL,
+    NEUTRO_ORDEM
+} Ordem;
+
+typedef enum {
+    BOM,
+    MAU,
+    NEUTRO_MORAL
+} Moral;
+
+/* "4d8+4" => quantity=4, faces=8, bonus=4 */
+typedef struct {
     int dice_quantity;
     int faces_of_dices;
+    int bonus;
 } Dice;
 
-typedef struct  {
+typedef struct {
     int personal_treasure;
     int covil_treasure;
     int dungeon_treasure;
 } Treasure;
 
-typedef struct  {} Moveset;
-typedef struct  {} Attack;
-typedef struct  {} Defence;
-typedef struct  {} TerrainMod;
+typedef struct {
+    /* Utilizo o MAX_TERRENOS para poder definir a quantidade de modificadores */
+    char terrenos[MAX_TERRENOS][TEXT_SIZE];
+    int modificadores[MAX_TERRENOS];
+    char voo_acobracia;   /* classe de manobrabilidade do voo ('C' em VOO:15:C) */
+    int quantidade;       /* quantos movimentos foram lidos */
+} Moveset;
+
+/* "GARRA:1d4" */
+typedef struct {
+    char nome[MAX_TEXT_LENGTH_MOB];
+    Dice dano;
+} Attack;
+
+typedef struct {
+    Attack itens[MAX_SEPARETORS];
+    int quantidade;
+} AttackList;
+
+/* "PELE_PEDRA:1:Resiste a armas comuns" */
+typedef struct {
+    char nome[MAX_TEXT_LENGTH_MOB];
+    int valor;
+    char descricao[MAX_TEXT_LENGTH_MOB];
+} Defence;
+
+typedef struct {
+    Defence itens[MAX_SEPARETORS];
+    int quantidade;
+} DefenceList;
+
+/* "RUINAS:3" */
+typedef struct {
+    char nome[MAX_TEXT_LENGTH_MOB];
+    int valor;
+} TerrainMod;
+
+typedef struct {
+    TerrainMod itens[MAX_TERRENOS];
+    int quantidade;
+} TerrainModList;
 
 
 typedef struct {
@@ -38,18 +104,18 @@ typedef struct {
     char terrenos[MAX_TERRENOS][MAX_TEXT_LENGTH_MOB];
     char organizacao[MAX_TEXT_LENGTH_MOB];
     Active atividade;
-    char dieta[MAX_TEXT_LENGTH_MOB];
+    Dieta dieta;
     int inteligencia;
     Treasure tesouro;
-    char ordem[MAX_TEXT_LENGTH_MOB];
-    char moralidade[MAX_TEXT_LENGTH_MOB];
+    Ordem ordem;
+    Moral moralidade;
     int ca;
     Moveset movimentos;
     Dice dv;
     int thac0;
-    Attack ataques;
-    Attack ataquesEspeciais;
-    Defence defesasEspeciais;
+    AttackList ataques;
+    AttackList ataquesEspeciais;
+    DefenceList defesasEspeciais;
     int resistenciaMagia;
     char tamanho[MAX_TEXT_LENGTH_MOB];
     float altura[VARIETY];
@@ -59,7 +125,7 @@ typedef struct {
     int poderBase;
     int modDia;
     int modNoite;
-    TerrainMod modTerreno;
+    TerrainModList modTerreno;
     int bonusPorAdicional;
     int limiteGrupoGrande;
     int bonusGrupoGrande;
@@ -68,7 +134,17 @@ typedef struct {
     char descricaoEcologia[MAX_TEXT_LENGTH_MOB];
 } Beast;
 
+#define MAX_BEASTS 50
+
+/* ATENCAO: sizeof(BeastDB) fica na casa de ~600 KB. Declare como global/static
+   ou use malloc; evite deixar na pilha. */
+typedef struct {
+    Beast beasts[MAX_BEASTS];   /* guardadas na ordem em que foram lidas */
+    int count;                  /* quantas estao preenchidas */
+} BeastDB;
+
 typedef enum ColumnBeast {
+    COLUMN_UNKNOWN = -1,   /* linha sem '=' ou coluna desconhecida ([MONSTRO], etc.) */
     ID,
     NOME,
     DESCRICAO,
@@ -106,7 +182,7 @@ typedef enum ColumnBeast {
     BONUS_GRUPO_GRANDE,
     DESCRICAO_COMBATE,
     HABITAT_SOCIEDADE,
-    DESCRICAO_ECOLOGIA,
+    DESCRICAO_ECOLOGIA
 } ColumnBeast;
 
 typedef struct {
@@ -155,7 +231,10 @@ static const ColumnMap COLUMN_MAPS[] = {
     {"descricaoEcologia", DESCRICAO_ECOLOGIA}
 };
 
-void* create_beast(BeastDB b_db, Beast *b); 
+void  beast_db_init(BeastDB *b_db);
+void* create_beast(BeastDB *b_db, int start_pos);    /* OKAY ou ERROR */
+int   load_beasts(BeastDB *b_db);                    /* devolve quantas carregou */
+Beast* get_beast_by_id(BeastDB *b_db, int id);       /* NULL se nao existir */
 
 
 #endif
