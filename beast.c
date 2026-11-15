@@ -1,6 +1,7 @@
 #include "beasts.h"
 #include "parse_file.h"
 #include "read_txt.h"
+#include <ctype.h>
 #include <stdio.h>
 
 void beast_db_init(BeastDB *b_db){
@@ -293,4 +294,224 @@ void print_beast(Beast b) {
     printf("DESCRICAO DE COMBATE: %s \n", b.descricaoCombate);
     printf("HABITAT E SOCIEDADE: %s \n", b.habitatSociedade);
     printf("ECOLOGIA: %s \n", b.descricaoEcologia);
+}
+
+
+// Crio so para normalizar tudo la embaixo.
+// Para alem do nome, eu entender o que estou comparando com o que
+
+
+/* ---------- Helpers internos ---------- */
+
+/* Slot válido = dentro de count e não removido (id != 0) */
+static int slot_valido(const BeastDB *b, int idx) {
+    return idx >= 0 && idx < b->count && idx < MAX_BEASTS && b->beasts[idx].id != 0;
+}
+
+/*
+ * Limpa a entrada: remove espaços nas pontas e converte para maiúsculas.
+ * Retorna 1 em sucesso; 0 se for NULL, vazia ou maior que o buffer.
+ */
+static int normaliza_texto(const char *src, char *dst, size_t cap) {
+    size_t len, i;
+
+    if (src == NULL || dst == NULL || cap == 0) return 0;
+
+    while (isspace((unsigned char)*src)) src++;
+
+    len = strlen(src);
+    while (len > 0 && isspace((unsigned char)src[len - 1])) len--;
+
+    if (len == 0 || len >= cap) return 0;
+
+    /* Capitaliza: primeira letra maiúscula, demais minúsculas */
+    dst[0] = (char)toupper((unsigned char)src[0]);
+    for (i = 1; i < len; i++) {
+        dst[i] = (char)tolower((unsigned char)src[i]);
+    }
+    dst[len] = '\0';
+    return 1;
+}
+
+static int normaliza_texto_maisculo(const char *src, char *dst, size_t cap) {
+    size_t len, i;
+
+    if (src == NULL || dst == NULL || cap == 0) return 0;
+
+    while (isspace((unsigned char)*src)) src++;
+
+    len = strlen(src);
+    while (len > 0 && isspace((unsigned char)src[len - 1])) len--;
+
+    if (len == 0 || len >= cap) return 0;
+
+    for (i = 0; i < len; i++) {
+        dst[i] = (char)toupper((unsigned char)src[i]);
+    }
+    dst[len] = '\0';
+    return 1;
+}
+
+/* Versão que recebe o terreno já normalizado (evita normalizar em loop) */
+static int vive_no_terreno_norm(const Beast *m, const char *terreno_norm) {
+    int i;
+    for (i = 0; i < MAX_TERRENOS; i++) {
+        if (m->terrenos[i][0] != '\0' && strcmp(m->terrenos[i], terreno_norm) == 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+/* ---------- Busca ---------- */
+Beast *buscaMonstroPorNome(BeastDB *b, const char *nome) {
+    char busca[MAX_TEXT_LENGTH_MOB];
+    int i;
+
+    if (b == NULL) return NULL;
+    if (!normaliza_texto(nome, busca, sizeof(busca))) return NULL;
+
+    for (i = 0; i < b->count && i < MAX_BEASTS; i++) {
+        if (slot_valido(b, i) && strcmp(b->beasts[i].nome, busca) == 0) {
+            return &b->beasts[i];
+        }
+    }
+    return NULL;
+}
+
+/* ---------- Alteração e remoção ---------- */
+
+/* Retorna 1 em sucesso, 0 se o id não existir */
+int alteraMonstro(BeastDB *b, int id, Beast novosDados) {
+    int idx = id - 1;
+
+    if (b == NULL || !slot_valido(b, idx)) return 0;
+
+    novosDados.id = id;          /* o id original é sempre preservado */
+    b->beasts[idx] = novosDados;
+    return 1;
+}
+
+/* Retorna 1 em sucesso, 0 se o id não existir */
+int removeMonstro(BeastDB *b, int id) {
+    int idx = id - 1;
+
+    if (b == NULL || !slot_valido(b, idx)) return 0;
+
+    /* Zera o slot (id = 0 => inválido). Nada é deslocado e count não muda,
+       então id continua igual a índice + 1 para os demais monstros. */
+    memset(&b->beasts[idx], 0, sizeof(Beast));
+    return 1;
+}
+
+/* ---------- Listagem ---------- */
+
+void listaMonstros(const BeastDB *b) {
+    int i, exibidos = 0;
+
+    if (b == NULL) return;
+
+    for (i = 0; i < b->count && i < MAX_BEASTS; i++) {
+        if (!slot_valido(b, i)) continue;
+
+        printf("ID: %d | NOME: %s | FREQUENCIA: %s \n",
+               b->beasts[i].id,
+               b->beasts[i].nome,
+               freq_str(b->beasts[i].frequencia));
+        exibidos++;
+    }
+
+    if (exibidos == 0) {
+        printf("Nenhum monstro cadastrado. \n");
+    }
+}
+
+/* ---------- Filtros ---------- */
+
+/* Retorna 1 se o monstro vive no terreno, 0 caso contrário */
+int viveNoTerreno(const Beast *m, Terreno terreno) {
+    char busca[MAX_TEXT_LENGTH_MOB];
+
+    if (m == NULL) return 0;
+    if (!normaliza_texto_maisculo(terreno, busca, sizeof(busca))) return 0;
+
+    return vive_no_terreno_norm(m, busca);
+}
+
+/* QUALQUER_HORARIO conta como ativo em qualquer período */
+static int monstro_ativo_no_periodo(const Beast *m, Active periodo) {
+    if (m == NULL) return 0;
+    if (m->atividade == QUALQUER_HORARIO) return 0;
+    return m->atividade == periodo;
+}
+
+/*
+ * Imprime os monstros ativos no período informado.
+ * Retorna quantos foram impressos.
+ * Depende de active_str() (definida em print_beast.c).
+ */
+int ativoNoPeriodo(const BeastDB *b, Active periodo) {
+    int i, encontrados = 0;
+
+    if (b == NULL) return 0;
+
+    printf("Monstros ativos no periodo %s: \n", active_str(periodo));
+
+    for (i = 0; i < b->count && i < MAX_BEASTS; i++) {
+        if (slot_valido(b, i) && monstro_ativo_no_periodo(&b->beasts[i], periodo)) {
+            printf("ID: %d | NOME: %s | ATIVIDADE: %s \n",
+                   b->beasts[i].id,
+                   b->beasts[i].nome,
+                   active_str(b->beasts[i].atividade));
+            encontrados++;
+        }
+    }
+
+    if (encontrados == 0) {
+        printf("Nenhum monstro ativo nesse periodo. \n");
+    }
+    return encontrados;
+}
+/*
+ * Preenche resultado[] com ponteiros para os monstros do terreno.
+ * Retorna quantos foram colocados (trunca em capacidadeResultado).
+ */
+int listaMonstrosPorTerreno(const BeastDB *b,
+                            Terreno terreno,
+                            Beast *resultado[],
+                            int capacidadeResultado) {
+    char busca[MAX_TEXT_LENGTH_MOB];
+    int i, encontrados = 0;
+
+    if (b == NULL || resultado == NULL || capacidadeResultado <= 0) return 0;
+    if (!normaliza_texto_maisculo(terreno, busca, sizeof(busca))) return 0;
+
+    for (i = 0; i < b->count && i < MAX_BEASTS && encontrados < capacidadeResultado; i++) {
+        if (slot_valido(b, i) && vive_no_terreno_norm(&b->beasts[i], busca)) {
+            /* cast necessário: b é const, mas a assinatura devolve Beast * */
+            resultado[encontrados++] = (Beast *)&b->beasts[i];
+        }
+    }
+    return encontrados;
+}
+
+void lista_monstro_terreno(Beast *m, int tamanho_arr) {
+    int i, j, n;
+
+    if (m == NULL || tamanho_arr <= 0) return;
+
+    for (i = 0; i < tamanho_arr; i++) {
+        if (m[i].id == 0) continue;
+
+        printf("ID: %d | NOME: %s | TERRENOS: ", m[i].id, m[i].nome);
+
+        n = 0;
+        for (j = 0; j < MAX_TERRENOS; j++) {
+            if (m[i].terrenos[j][0] == '\0') continue;
+            printf("%s%s", (n > 0) ? ", " : "", m[i].terrenos[j]);
+            n++;
+        }
+        if (n == 0) printf("NENHUM");
+        printf(" \n");
+    }
 }

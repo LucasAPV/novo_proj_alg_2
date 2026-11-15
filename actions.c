@@ -1,4 +1,8 @@
 #include "actions.h"
+#include "beasts.h"
+#include "error.h"
+#include "interface.h"
+#include <stdio.h>
 
 void actions_for_characters(CharacterDB *c_db) {
   while (1) {
@@ -233,4 +237,87 @@ void actions_for_items(CharacterDB *c_db, ItemDB *i_db) {
       break;
     }
   }
+}
+
+void actions_for_monsters(BeastDB *b_db) {
+    while (1) {
+        int opt = monster_area();
+
+        switch (opt) {
+            case 0:
+                return;
+            break;
+
+            case 1:
+                int id = 0;
+                printf("Digite o ID desejado:\n");
+                scanf("%d", &id);
+
+                Beast *b_id = get_beast_by_id(b_db, id);
+                print_beast(*b_id);
+            break;
+
+            case 2:
+                char name[100]; // Aloca 100 bytes de memória modificável
+                printf("Digite o nome da besta a ser buscada:\n");
+
+                // %99s limita a leitura a 99 caracteres para proteger a memória
+                if (scanf("%99s", name) == 1) {
+                    printf("Passou pelo o scan\n");
+
+                    Beast *b_nome = buscaMonstroPorNome(b_db, name);
+                    printf("Passou pela busca\n");
+
+                    if (b_nome != NULL) {
+                        print_beast(*b_nome);
+                    } else {
+                        printf("Besta não encontrada.\n");
+                    }
+                }
+            break;
+
+            case 3:
+                printf("Digite o id do mostro a ser deletado: \n");
+                int id_deletado;
+                scanf("%d", &id_deletado);
+                if(removeMonstro(b_db, id_deletado) == 0) log_error(ERROR_DELETE_ON_MONSTER);
+            break;
+
+            case 4:
+                listaMonstros(b_db);
+            break;
+
+            case 5:
+                int periodo;
+                printf("Escolha o periodo desejado:\n");
+                printf("1 - QUALQUER_HORARIO\n");
+                printf("2 - DIURNO\n");
+                printf("3 - NOTURNO\n");
+                scanf("%d", &periodo);
+
+                if(periodo - 1 < 0 || periodo - 1 > 2) {
+                    log_error(INVALID_ENTRY);
+                    return;
+                }
+                ativoNoPeriodo(b_db, (Active)(periodo - 1));
+            break;
+
+            case 6:
+                printf("Digite o terreno desejado:\n");
+                char terreno[100];
+                if (scanf("%99s", terreno) == 1) {
+                    Beast *b_terreno[MAX_BEASTS] = {0};
+                    int n = listaMonstrosPorTerreno(b_db, terreno, b_terreno, MAX_BEASTS);
+
+                    printf("\n\n MONSTROS NO TERRENO %s \n\n", terreno);
+                    if (n == 0) {
+                        printf("Nenhum monstro encontrado nesse terreno. \n");
+                    }
+                    for (int i = 0; i < n; i++) {
+                        lista_monstro_terreno(b_terreno[i], 1);
+                    }
+                }
+            break;
+        }
+    }
 }

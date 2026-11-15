@@ -24,6 +24,10 @@ void log_error(int err) {
    case UNABLE_TO_CREATE_BEAST_DB:
        fprintf(stderr, "\n\nERROR: UNABLE TO CREATE BEAST DB!!! FILE:%s == LINE:%d \n\n", __FILE__, __LINE__);
    break;
+
+   case ERROR_DELETE_ON_MONSTER:
+       fprintf(stderr, "\n\nERROR: UNABLE TO DELETE BEAST!!! FILE:%s == LINE:%d \n\n", __FILE__, __LINE__);
+   break;
    default:
       printf("UNKNOW ERROR!!! %s %d\n", __FILE__, __LINE__);
       break;

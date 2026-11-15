@@ -33,6 +33,9 @@ int main(void) {
       actions_for_items(&c_db, &i_db);
       break;
 
+    case 3:
+        actions_for_monsters(&b_db);
+    break;
     default:
       printf("Opcao invalida!\n");
       break;

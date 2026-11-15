@@ -14,10 +14,14 @@ void create_options(char options[][TEXT_SIZE], int num_options) {
 
 int create_initial_menu() {
    printf("Escolha uma das opcoes:\n");
-   printf("1- Acessar area dos Personagens\n");
-   printf("2- Acessar area dos Itens\n");
-   printf("0- Sair do programa\n");
+   char options[][TEXT_SIZE] = {
+        "Sair do programa",
+        "Acessar area dos Personagens",
+        "Acessar area dos Itens",
+        "Acessar area dos Monstros"
+   };
 
+   create_options(options, 4);
    int opt = 0;
    scanf("%d", &opt);
 
@@ -66,4 +70,24 @@ int item_area() {
    scanf("%d", &opt);
 
    return opt;
+}
+
+int monster_area(){
+    int opt = 0;
+    char opcoes[][TEXT_SIZE] = {
+       "Sair",
+       "Buscar monstro por ID",
+       "Buscar monstro por NOME",
+       "Remover monstro",
+       "Listar TODOS os mostros",
+       "Listar monstros que estao ativo no periodo",
+       "Listar monstro por terreno"
+    };
+
+    create_title("AREA DOS MONSTROS");
+    create_options(opcoes, 7);
+
+    scanf("%d", &opt);
+
+    return opt;
 }

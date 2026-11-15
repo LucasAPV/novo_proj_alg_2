@@ -5,6 +5,8 @@
 #include "basic_imports.h"
 #include <stdint.h>
 
+typedef const char *Terreno;
+
 typedef enum {
     FREQ_MUITO_RARO,
     FREQ_RARO,
@@ -237,5 +239,14 @@ void* create_beast(BeastDB *b_db, int start_pos);    /* OKAY ou ERROR */
 int   load_beasts(BeastDB *b_db);                    /* devolve quantas carregou */
 Beast* get_beast_by_id(BeastDB *b_db, int id);       /* NULL se nao existir */
 void print_beast(Beast b);
+Beast *buscaMonstroPorNome(BeastDB *b, const char *nome);
+int alteraMonstro(BeastDB *b, int id, Beast novosDados);
+int removeMonstro(BeastDB *b, int id);
+void listaMonstros(const BeastDB *b);
+void lista_monstro_terreno(Beast *m, int tamanho_arr);
+int viveNoTerreno(const Beast *m, Terreno terreno);
+int ativoNoPeriodo(const BeastDB *b, Active periodo);
+int listaMonstrosPorTerreno(const BeastDB *b, Terreno terreno,
+                            Beast *resultado[], int capacidadeResultado);
 
 #endif
