@@ -2,6 +2,7 @@
 #define __BEASTS__
 
 #include "definitions.h"
+#include "basic_imports.h"
 #include <stdint.h>
 
 typedef enum {
@@ -235,6 +236,6 @@ void  beast_db_init(BeastDB *b_db);
 void* create_beast(BeastDB *b_db, int start_pos);    /* OKAY ou ERROR */
 int   load_beasts(BeastDB *b_db);                    /* devolve quantas carregou */
 Beast* get_beast_by_id(BeastDB *b_db, int id);       /* NULL se nao existir */
-
+void print_beast(Beast b);
 
 #endif

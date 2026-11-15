@@ -1,6 +1,6 @@
 #ifndef __PARSE_FILE__
 #define __PARSE_FILE__
-#define FILE_PATH "../beastiary/bestiario.txt"
+#define FILE_PATH "./beastiary/bestiario.txt"
 #include "beasts.h"
 
 char** next_beast_definition(int start_pos);
