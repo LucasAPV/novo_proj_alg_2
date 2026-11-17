@@ -18,7 +18,10 @@ int create_initial_menu() {
         "Sair do programa",
         "Acessar area dos Personagens",
         "Acessar area dos Itens",
-        "Acessar area dos Monstros"
+        "Acessar area dos Monstros",
+        "Acessar area da Party",
+        "Acessar area de Criacao de um Contexto",
+        "Acessar area da Criacao dos Monstros Candidatos"
    };
 
    create_options(options, 4);
@@ -86,6 +89,22 @@ int monster_area(){
 
     create_title("AREA DOS MONSTROS");
     create_options(opcoes, 7);
+
+    scanf("%d", &opt);
+
+    return opt;
+}
+
+int candidates_area(){
+    int opt = 0;
+    char opcoes[][TEXT_SIZE] = {
+       "Sair",
+       "Gerar",
+       "Conferir Candidatos"
+    };
+
+    create_title("AREA DOS CANDIDATOS");
+    create_options(opcoes, 3);
 
     scanf("%d", &opt);
 

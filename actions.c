@@ -321,3 +321,28 @@ void actions_for_monsters(BeastDB *b_db) {
         }
     }
 }
+
+void actions_for_candidates(ContextEncounter c, BeastsCandidates *b, BeastDB b_db){
+    while (1) {
+        int opt = candidates_area();
+        switch (opt) {
+            case 0:
+                return;
+            break;
+
+            case 1:
+                if(filter_candidates(b_db, b, c) == 0) {
+                    printf("DEU ERRADO!!\n");
+                    return;
+                }
+                printf("CANDIDATOS GERADOS!!\n");
+            break;
+
+            case 2:
+                for (int i = 0; i < b->quantity_found; ++i) {
+                    print_beast(b->b[i]);
+                }
+            break;
+        }
+    }
+}

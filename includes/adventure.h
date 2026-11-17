@@ -5,8 +5,8 @@
 
 typedef enum {
    HUMAN,
-   ELF, 
-   DWARF, 
+   ELF,
+   DWARF,
    HALFLING,
    END_RACE
 } Race;
@@ -14,8 +14,8 @@ typedef enum {
 
 typedef enum {
    WARRIOR,
-   ROUGUE, 
-   MAGE, 
+   ROUGUE,
+   MAGE,
    CLERIC,
    END_CLASS
 } Class;
@@ -45,7 +45,7 @@ typedef struct {
    int defence; // 1 -- 30
    int iniciative; // -5 -- 20
    int power; // 1 -- 100
-   
+
    struct{
       Item itens[MAX_CAPACITY];
       int curr_ocupied_space;
@@ -80,4 +80,5 @@ void print_all_characters(CharacterDB c_db);
 void* update_character(int id, CharacterDB *c_db);
 void* remove_character(int id, CharacterDB *c_db);
 void* drop_item_from_inventory(Character *c, int index);
+
 #endif

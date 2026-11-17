@@ -17,7 +17,7 @@ int main(int argc, char **argv)
       "-Iincludes" , "-o", OUTPUT_FOLDER"main",
       "main.c", "./utilitaries/error.c", "adventure.c", "item.c", "interface.c",
       "beast.c", "./utilitaries/parse_file.c", "./utilitaries/read_txt.c",
-      "actions.c"/*Mais arquivos aqui*/
+      "actions.c", "context.c", "filter.c"/*Mais arquivos aqui*/
    );
    if (!cmd_run(&cmd)) return 1;
 
