@@ -110,3 +110,35 @@ int candidates_area(){
 
     return opt;
 }
+
+int party_area(){
+    int opt = 0;
+    char opcoes[][TEXT_SIZE] = {
+       "Sair",
+       "Gerar PARTY",
+       "Conferir PARTY"
+    };
+
+    create_title("AREA DA PARTY");
+    create_options(opcoes, 3);
+
+    scanf("%d", &opt);
+
+    return opt;
+}
+
+int context_area(){
+    int opt = 0;
+    char opcoes[][TEXT_SIZE] = {
+       "Sair",
+       "Gerar Contexto",
+       "Conferir Contexto"
+    };
+
+    create_title("AREA DO CONTEXTO");
+    create_options(opcoes, 3);
+
+    scanf("%d", &opt);
+
+    return opt;
+}

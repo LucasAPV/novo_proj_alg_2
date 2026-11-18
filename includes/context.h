@@ -20,4 +20,5 @@ typedef struct {
 } ContextEncounter;
 
 int generate_context(char terrain[TEXT_SIZE], Active period, Dificulty dificulty, ContextEncounter *c, int party_power);
+void print_context(ContextEncounter context);
 #endif

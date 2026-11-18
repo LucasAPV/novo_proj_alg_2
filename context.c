@@ -1,6 +1,7 @@
 #include "context.h"
 #include "beasts.h"
 #include "definitions.h"
+#include <stdio.h>
 int generate_context(char terrain[TEXT_SIZE], Active period,
     Dificulty dificulty, ContextEncounter *c, int party_power) {
     c->period = period;
@@ -28,4 +29,36 @@ int generate_context(char terrain[TEXT_SIZE], Active period,
             return 0;
     }
     return 1;
+}
+
+void print_context(ContextEncounter context) {
+    printf("Terreno: %s\n", context.terrain);
+
+    switch (context.period) {
+        case DIURNO:
+            printf("Periodo: DIURNO\n");
+        break;
+
+        case NOTURNO:
+            printf("Periodo: NOTURNO\n");
+        break;
+
+        case QUALQUER_HORARIO:
+            printf("Periodo: QUALQUER_HORARIO\n");
+        break;
+    }
+
+    switch (context.dificulty) {
+        case HARD:
+            printf("Dificuldade: HARD\n");
+        break;
+
+        case EASY:
+            printf("Dificuldade: EASY\n");
+        break;
+
+        case MEDIUM:
+            printf("Dificuldade: MEDIUM\n");
+        break;
+    }
 }

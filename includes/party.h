@@ -20,6 +20,6 @@ typedef struct {
 
 
 int create_party(int ids[MAX_PARTY_SIZE], int quantity, Party* p, CharacterDB c_db);
-
+void print_party(Party *party);
 
 #endif

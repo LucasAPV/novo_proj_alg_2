@@ -1,7 +1,10 @@
 #include "actions.h"
+#include "adventure.h"
 #include "beasts.h"
+#include "context.h"
 #include "error.h"
 #include "interface.h"
+#include "party.h"
 #include <stdio.h>
 
 void actions_for_characters(CharacterDB *c_db) {
@@ -342,6 +345,75 @@ void actions_for_candidates(ContextEncounter c, BeastsCandidates *b, BeastDB b_d
                 for (int i = 0; i < b->quantity_found; ++i) {
                     print_beast(b->b[i]);
                 }
+            break;
+        }
+    }
+}
+
+void actions_for_party(Party *party, CharacterDB c_db){
+    while(1){
+        int opt = party_area();
+        switch (opt) {
+            case 0:
+                return;
+            break;
+
+            case 1:
+                int qtd = 0;
+                printf("Selecione a quantidade de personagens para a PARTY:\n");
+                scanf("%d", &qtd);
+
+                int *ids = {0};
+
+                for(int i = 0; i < qtd; ++i){
+                    printf("Digite o id para o %d personagem", i + 1);
+                    scanf("%d", &ids[i]);
+                }
+
+                create_party(ids, qtd, party, c_db);
+            break;
+
+            case 2:
+                print_party(party);
+            break;
+
+        }
+    }
+
+}
+
+void actions_for_context(ContextEncounter *context, Party party){
+    while (1) {
+        int opt = context_area();
+
+        switch (opt) {
+            case 0:
+                return;
+            break;
+
+            case 1:
+                Active periodo;
+                printf("Digite o Periodo desejado");
+                printf("1 - QUALQUER HORARIO\n 2 - DIURNO \n 3 - NOTURNO \n");
+                scanf("%d", &periodo);
+                periodo--;
+
+                Dificulty dificulty;
+                printf("Digite a Dificuldade desejado");
+                printf("1 - FACIL\n 2 - MEDIO \n 3 - DIFICIL \n");
+                scanf("%d", &dificulty);
+                dificulty--;
+
+                printf("Digite o terreno desejado:\n");
+                char terreno[TEXT_SIZE];
+                if (scanf("%99s", terreno) == 1) {
+                    generate_context(terreno, periodo,
+                    dificulty, context, party.total_power);
+                }
+            break;
+
+            case 2:
+                print_context(*context);
             break;
         }
     }

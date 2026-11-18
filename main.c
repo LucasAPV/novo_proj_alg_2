@@ -51,41 +51,13 @@ int main(void) {
     break;
 
     case 4:
-        /* Criacao da Party */
-        int qtd = 0;
-        printf("Selecione a quantidade de personagens para a PARTY:\n");
-        scanf("%d", &qtd);
-
-        int *ids = {0};
-
-        for(int i = 0; i < qtd; ++i){
-            printf("Digite o id para o %d personagem", i + 1);
-            scanf("%d", &ids[i]);
-        }
-
-        create_party(ids, qtd, &party, c_db);
+        actions_for_party(&party, c_db);
     break;
+
     case 5:
-        /* Criacao de um Contexto */
-        Active periodo;
-        printf("Digite o Periodo desejado");
-        printf("1 - QUALQUER HORARIO\n 2 - DIURNO \n 3 - NOTURNO \n");
-        scanf("%d", &periodo);
-        periodo--;
-
-        Dificulty dificulty;
-        printf("Digite a Dificuldade desejado");
-        printf("1 - FACIL\n 2 - MEDIO \n 3 - DIFICIL \n");
-        scanf("%d", &dificulty);
-        dificulty--;
-
-        printf("Digite o terreno desejado:\n");
-        char terreno[TEXT_SIZE];
-        if (scanf("%99s", terreno) == 1) {
-            generate_context(terreno, periodo,
-            dificulty, &context, party.total_power);
-        }
+        actions_for_context(&context, party);
     break;
+
     case 6:
         actions_for_candidates(context, &b_candidates, b_db);
     break;

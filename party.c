@@ -29,3 +29,19 @@ int create_party(int ids[MAX_PARTY_SIZE], int quantity, Party* p, CharacterDB c_
 
     return 1;
 }
+
+void print_party(Party *party) {
+    if(party == NULL) {
+        printf("PARTY INEXSISTENTE!!!\n");
+        return;
+    }
+
+    printf("IDS dos aventureiros: \n");
+    for(int i = 0; i < party->quantity; ++i){
+        printf("[%d] ", party->ids_adventures[i]);
+    }
+    printf("\n");
+
+    printf("Quantidade de membros na party: %d\n", party->quantity);
+    printf("Poder total da party: %d \n", party->total_power);
+}
