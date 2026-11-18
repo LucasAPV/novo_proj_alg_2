@@ -16,27 +16,17 @@ int main(void) {
   CharacterDB c_db = {0};
   ItemDB i_db = {0};
 
-  Character teste = {
-      .id = 0,
-      .class = (Class) 0,
-      .attack = 2,
-      2
-  };
-
-  c_db.chars[0] = teste;
-
   /* BEASTAS */
   /* Carregando as beastas de uma vez */
   BeastDB b_db = {0};
   beast_db_init(&b_db);
   if (load_beasts(&b_db) == -1) {log_error(UNABLE_TO_CREATE_BEAST_DB);}
-
-  /* PARTY */
+  BeastsCandidates b_candidates = {0};
+ // PARTY
   Party party = {0};
 
-  /* ENCONTROS E CONTEXTO */
+  //  ENCONTROS E CONTEXTO
   ContextEncounter context = {0};
-  BeastsCandidates b_candidates = {0};
   PossibleEncounters encontro = {0};
   int choosed_encounter = 0;
 

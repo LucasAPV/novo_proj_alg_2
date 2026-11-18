@@ -1,6 +1,8 @@
 #ifndef __DEFINITIONS__
 #define __DEFINITIONS__
 
+#define debug(fmt, ...) printf("\n[DEBUG] " fmt "\n", ##__VA_ARGS__)
+
 #define OKAY (void*)1
 #define ERROR (void*) 0
 

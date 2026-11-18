@@ -32,18 +32,17 @@ int generate_context(char terrain[TEXT_SIZE], Active period,
 }
 
 void print_context(ContextEncounter context) {
-    printf("Terreno: %s\n", context.terrain);
-
-    switch (context.period) {
-        case DIURNO:
+    printf("\nTerreno: %s\n", context.terrain);
+    switch ((int)context.period) {
+        case (int)DIURNO:
             printf("Periodo: DIURNO\n");
         break;
 
-        case NOTURNO:
+        case (int)NOTURNO:
             printf("Periodo: NOTURNO\n");
         break;
 
-        case QUALQUER_HORARIO:
+        case (int)QUALQUER_HORARIO:
             printf("Periodo: QUALQUER_HORARIO\n");
         break;
     }

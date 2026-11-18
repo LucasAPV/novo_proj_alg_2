@@ -396,14 +396,13 @@ void actions_for_context(ContextEncounter *context, Party party){
             case 1:
                 Active periodo;
                 int p_opt = 0;
-                printf("Digite o Periodo desejado");
+                printf("Digite o Periodo desejado:\n");
                 printf("1 - QUALQUER HORARIO\n 2 - DIURNO \n 3 - NOTURNO \n");
                 scanf("%d", &p_opt);
                 periodo = (Active) (p_opt--);
-
                 Dificulty dificulty;
                 int df_opt = 0;
-                printf("Digite a Dificuldade desejado");
+                printf("Digite a Dificuldade desejado: \n");
                 printf("1 - FACIL\n 2 - MEDIO \n 3 - DIFICIL \n");
                 scanf("%d", &df_opt);
                 dificulty = (Dificulty) (df_opt--);
@@ -414,6 +413,8 @@ void actions_for_context(ContextEncounter *context, Party party){
                     generate_context(terreno, periodo,
                     dificulty, context, party.total_power);
                 }
+
+                print_context(*context);
             break;
 
             case 2:

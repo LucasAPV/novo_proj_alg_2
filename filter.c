@@ -1,8 +1,6 @@
 #include "filter.h"
 #include "beasts.h"
 #include "definitions.h"
-
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -33,6 +31,7 @@ int filter_candidates(BeastDB b_db, BeastsCandidates *b, ContextEncounter c){
         free(possible_by_terrain);
         return 0;
     }
+
 
     if(b->quantity_found >= 49) {
         free(monster_by_period);
