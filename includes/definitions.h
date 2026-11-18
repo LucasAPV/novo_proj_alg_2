@@ -17,7 +17,7 @@
 #define MAX_CAPACITY 50
 #define TEXT_SIZE 256            /* era 100 */
 #define MAX_PARTY_SIZE 6
-
+#define MAX_ENCOUNTERS 3
 #define TREASURE_SIZE 10
 #define MAX_TEXT_LENGTH_MOB 256  /* era 50: as descricoes do exemplo tem ~80 bytes */
 #define GRID 2

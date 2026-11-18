@@ -2,6 +2,7 @@
 #include "adventure.h"
 #include "context.h"
 #include "definitions.h"
+#include "encounter.h"
 #include "error.h"
 #include "filter.h"
 #include "interface.h"
@@ -15,6 +16,15 @@ int main(void) {
   CharacterDB c_db = {0};
   ItemDB i_db = {0};
 
+  Character teste = {
+      .id = 0,
+      .class = (Class) 0,
+      .attack = 2,
+      2
+  };
+
+  c_db.chars[0] = teste;
+
   /* BEASTAS */
   /* Carregando as beastas de uma vez */
   BeastDB b_db = {0};
@@ -27,6 +37,8 @@ int main(void) {
   /* ENCONTROS E CONTEXTO */
   ContextEncounter context = {0};
   BeastsCandidates b_candidates = {0};
+  PossibleEncounters encontro = {0};
+  int choosed_encounter = 0;
 
   while (1) {
     int option = create_initial_menu();
@@ -63,8 +75,9 @@ int main(void) {
     break;
 
     case 7:
-        /* GERAR POSSIBILIDADES DE ENCONTROS COM TANTOS BIXOS */
+        actions_for_encounter(b_candidates, &encontro, &choosed_encounter);
     break;
+
     default:
       printf("Opcao invalida!\n");
       break;

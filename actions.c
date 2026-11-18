@@ -2,7 +2,10 @@
 #include "adventure.h"
 #include "beasts.h"
 #include "context.h"
+#include "definitions.h"
+#include "encounter.h"
 #include "error.h"
+#include "filter.h"
 #include "interface.h"
 #include "party.h"
 #include <stdio.h>
@@ -342,9 +345,7 @@ void actions_for_candidates(ContextEncounter c, BeastsCandidates *b, BeastDB b_d
             break;
 
             case 2:
-                for (int i = 0; i < b->quantity_found; ++i) {
-                    print_beast(b->b[i]);
-                }
+                lista_monstro_terreno(b->b, 50);
             break;
         }
     }
@@ -363,13 +364,14 @@ void actions_for_party(Party *party, CharacterDB c_db){
                 printf("Selecione a quantidade de personagens para a PARTY:\n");
                 scanf("%d", &qtd);
 
-                int *ids = {0};
+                int ids[MAX_PARTY_SIZE] = {0};
 
                 for(int i = 0; i < qtd; ++i){
-                    printf("Digite o id para o %d personagem", i + 1);
+                    printf("Digite o id para o %d personagem: \n", i + 1);
                     scanf("%d", &ids[i]);
                 }
 
+                printf("ENTROU DA FUNCAO DE CRIAR PARTY!!!\n");
                 create_party(ids, qtd, party, c_db);
             break;
 
@@ -393,16 +395,18 @@ void actions_for_context(ContextEncounter *context, Party party){
 
             case 1:
                 Active periodo;
+                int p_opt = 0;
                 printf("Digite o Periodo desejado");
                 printf("1 - QUALQUER HORARIO\n 2 - DIURNO \n 3 - NOTURNO \n");
-                scanf("%d", &periodo);
-                periodo--;
+                scanf("%d", &p_opt);
+                periodo = (Active) (p_opt--);
 
                 Dificulty dificulty;
+                int df_opt = 0;
                 printf("Digite a Dificuldade desejado");
                 printf("1 - FACIL\n 2 - MEDIO \n 3 - DIFICIL \n");
-                scanf("%d", &dificulty);
-                dificulty--;
+                scanf("%d", &df_opt);
+                dificulty = (Dificulty) (df_opt--);
 
                 printf("Digite o terreno desejado:\n");
                 char terreno[TEXT_SIZE];
@@ -414,6 +418,37 @@ void actions_for_context(ContextEncounter *context, Party party){
 
             case 2:
                 print_context(*context);
+            break;
+        }
+    }
+}
+
+void actions_for_encounter(BeastsCandidates b_cad, PossibleEncounters *enc, int *ch_enc){
+    while(1){
+        int opt = encounter_area();
+
+        switch (opt) {
+            case 0:
+                return;
+            break;
+
+            case 1:
+                generate_encounter(b_cad, enc);
+                printf("Encontro Gerado!!\n");
+            break;
+
+            case 2:
+                int ch = 0;
+                print_encounter(*enc);
+                printf("\n\n Escolha o enconstro desejado: \n");
+                scanf("%d", &ch);
+                if (ch > 2 || ch < 0) {
+                    printf("opcao invalida!!!");
+                    return;
+                }
+
+                *ch_enc = ch;
+                printf("\nEncontro %d foi escolhido!!!\n", ch);
             break;
         }
     }

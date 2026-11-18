@@ -34,35 +34,6 @@ int filter_candidates(BeastDB b_db, BeastsCandidates *b, ContextEncounter c){
         return 0;
     }
 
-    //int total_index = 0;
-    //for (int i = 0; i < size; i++) {
-    //    switch (possible_by_terrain[i]->frequencia) {
-    //        case FREQ_COMUM:
-    //            total_index += 12;
-    //            break;
-    //        case FREQ_INCOMUM:
-    //            total_index += 4;
-    //            break;
-    //        case FREQ_RARO:
-    //            total_index += 2;
-    //            break;
-    //        case FREQ_MUITO_RARO:
-    //            total_index++;
-    //            break;
-    //    }
-    //}
-
-    //if (total_index <= 0) {
-    //    free(monster_by_period);
-    //    free(possible_by_terrain);
-    //    return 0;
-    //}
-
-    //int ponder = rand() % total_index;
-    //int moduli = (ponder <= 0) ? -1 * ponder : ponder;
-    //int if_zero = (moduli == 0) ? 1 : moduli;
-    //int candidate_index = (if_zero - 1) % size;
-
     if(b->quantity_found >= 49) {
         free(monster_by_period);
         free(possible_by_terrain);
@@ -70,7 +41,7 @@ int filter_candidates(BeastDB b_db, BeastsCandidates *b, ContextEncounter c){
     }
 
     for (int i = 0; i < size; ++i) {
-        b->b[size] = *possible_by_terrain[i];
+        b->b[i] = monster_by_period[i];
         b->quantity_found++;
     }
 

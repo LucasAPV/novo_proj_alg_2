@@ -11,6 +11,8 @@ int monster_area();
 int candidates_area();
 int party_area();
 int context_area();
+int encounter_area();
+
 void create_options(char options[][TEXT_SIZE], int num_options);
 void create_title (char* title);
 #endif

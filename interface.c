@@ -21,10 +21,11 @@ int create_initial_menu() {
         "Acessar area dos Monstros",
         "Acessar area da Party",
         "Acessar area de Criacao de um Contexto",
-        "Acessar area da Criacao dos Monstros Candidatos"
+        "Acessar area da Criacao dos Monstros Candidatos",
+        "Acessar area de Possiveis encontros"
    };
 
-   create_options(options, 4);
+   create_options(options, 8);
    int opt = 0;
    scanf("%d", &opt);
 
@@ -136,6 +137,22 @@ int context_area(){
     };
 
     create_title("AREA DO CONTEXTO");
+    create_options(opcoes, 3);
+
+    scanf("%d", &opt);
+
+    return opt;
+}
+
+int encounter_area(){
+    int opt = 0;
+    char opcoes[][TEXT_SIZE] = {
+       "Sair",
+       "Gerar Encontro",
+       "Conferir e Escolher um Encontro"
+    };
+
+    create_title("AREA DO Encontro");
     create_options(opcoes, 3);
 
     scanf("%d", &opt);
