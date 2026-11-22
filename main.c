@@ -81,9 +81,16 @@ void actions_for_battle(int opt, BattleSpecifier *bs, CharacterDB c_db){
     int life_points_adv[party_number] = {0};
     
     gen_life(life_points_beasts, number_of_beasts);
-    
+    int beast_atk = 0;
     bool turn = true; // true -> adv || false -> beast
     while (1) {
+        if(turn == false){
+            beast_atk = rand()%number_of_beasts;
+            attack_phase(turn, char_attack, beast_atk, life_points_beasts, life_points_adv);
+            turn = !turn;
+            printf("\nA BESTA %d REALIZAOU O ATAQUE, TOME CUIDADO!!\n", beast_atk);
+            continue;
+        }
         int opt = battle_area();
         switch(opt){
             case 0:
@@ -96,7 +103,7 @@ void actions_for_battle(int opt, BattleSpecifier *bs, CharacterDB c_db){
                 show_party_members(bs->p, c_db, life_points_adv);
                 scanf("%d", &char_attack);
             
-                int beast_atk = 0;
+                beast_atk = 0;
                 printf("Qual mostro deve ser atacado?:\n");
                 show_monster_members(bs->encounter[chosen_enc], life_points_beasts);
                 scanf("%d", &beast_atk);
