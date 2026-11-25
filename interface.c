@@ -159,3 +159,18 @@ int encounter_area(){
 
     return opt;
 }
+
+int battle_area(){
+    char opcoes[][TEXT_SIZE] = {
+        "Sair",
+        "Lutar",
+        "Fugir"
+    };
+    create_title("BATALHA");
+    create_options(opcoes, 3);
+
+    int opt = 0;
+    scanf("%d", &opt);
+
+    return opt;
+}
