@@ -9,7 +9,22 @@
 #include "interface.h"
 #include "item.h"
 #include "party.h"
+#include "battle.h"
 #include <stdio.h>
+#include <stddef.h>
+
+bool is_zero_bytes(const void* data, size_t size){
+    const unsigned char* bytes = (const unsigned char*) data;
+    for(size_t i = 0; i < size; ++i){
+        if(bytes[i] != 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+#define is_struct_empty(s) is_zero_bytes(&s, sizeof(s))
+
 
 int main(void) {
   /* PERSONAGENS */
@@ -30,7 +45,7 @@ int main(void) {
   //  ENCONTROS E CONTEXTO
   ContextEncounter context = {0};
   PossibleEncounters encontro = {0};
-  int choosed_encounter = 0;
+  int choosed_encounter = -1;
 
   while (1) {
     int option = create_initial_menu();
@@ -71,8 +86,22 @@ int main(void) {
       break;
         
     case 8:
-        actions_for_battle();
-
+        if(
+            choosed_encounter == -1    || 
+            is_struct_empty(party)     ||
+            is_struct_empty(encontro) 
+            )
+           {
+               printf("\n\nUm dos dados esta faltando!! E necessario a escolha de qual encountro quer e uma party!! \n\n");
+               break;
+           }
+        BattleSpecifier bs = {0};
+        bs.p = party;
+        bs.encounter = encontro;
+        bs.choosed_encounter = choosed_encounter;
+        
+        actions_for_battle(&bs, c_db);
+        break;
     default:
       printf("Opcao invalida!\n");
       break;

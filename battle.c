@@ -1,5 +1,5 @@
 #include "battle.h"
-
+#include "interface.h"
 void show_party_members(Party party, CharacterDB c_db, int life[]){
     for(int i = 0; i < party.quantity; ++i){
         Character* c = (Character*)select_character_by_id(party.ids_adventures[i], &c_db);

@@ -22,10 +22,11 @@ int create_initial_menu() {
         "Acessar area da Party",
         "Acessar area de Criacao de um Contexto",
         "Acessar area da Criacao dos Monstros Candidatos",
-        "Acessar area de Possiveis encontros"
+        "Acessar area de Possiveis encontros",
+        "Batalhar!!!"
    };
 
-   create_options(options, 8);
+   create_options(options, 9);
    int opt = 0;
    scanf("%d", &opt);
 

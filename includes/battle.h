@@ -2,9 +2,9 @@
 #define __BATTLE__
 
 #include "definitions.h"
-#include 
+#include "basic_imports.h" 
 #include "party.h"
-#include "beast.h"
+#include "beasts.h"
 #include "adventure.h"
 #include "filter.h"
 #include "encounter.h"
