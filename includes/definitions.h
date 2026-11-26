@@ -1,7 +1,11 @@
 #ifndef __DEFINITIONS__
 #define __DEFINITIONS__
 
+/*
+    * Esse macro foi gerado para fazer prints de debug mais facilmente @LucasAPV
+*/
 #define debug(fmt, ...) printf("\n[DEBUG] " fmt "\n", ##__VA_ARGS__)
+
 
 #define OKAY (void*)1
 #define ERROR (void*) 0

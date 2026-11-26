@@ -12,7 +12,9 @@
 #include "battle.h"
 #include <stdio.h>
 #include <stddef.h>
-
+/*
+    * Esse macro e para conseguir conferir de forma mais simplificada se uma estrutrura esta vazia ou nao @LucasAPV
+*/
 bool is_zero_bytes(const void* data, size_t size){
     const unsigned char* bytes = (const unsigned char*) data;
     for(size_t i = 0; i < size; ++i){
@@ -24,7 +26,6 @@ bool is_zero_bytes(const void* data, size_t size){
 }
 
 #define is_struct_empty(s) is_zero_bytes(&s, sizeof(s))
-
 
 int main(void) {
   /* PERSONAGENS */
@@ -99,6 +100,15 @@ int main(void) {
         bs.p = party;
         bs.encounter = encontro;
         bs.choosed_encounter = choosed_encounter;
+        
+        /*
+            @LucasAPV
+            [TODO]
+                title="Realizar ajustes finos na batalha"
+                desc="Mostrar todas as bestas que estao na batalha, e mostrar tela de derrota ou vitoria, atualizar as vidas da party."
+                relevance=Importante
+            [\TODO]
+        */
         
         actions_for_battle(&bs, c_db);
         break;

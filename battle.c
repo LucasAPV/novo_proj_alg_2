@@ -78,7 +78,12 @@ void actions_for_battle(BattleSpecifier *bs, CharacterDB c_db){
 
     int life_points_beasts[3] = {0};
     int life_points_adv[6] = {0};
-
+    
+    for(int i = 0; i < bs->p.quantity; ++i){
+        Character *c = (Character*)select_character_by_id(bs->p.ids_adventures[i], &c_db);
+        life_points_adv[i] = c->current_life_points;
+    }
+    
     gen_life(life_points_beasts, number_of_beasts);
     int beast_atk = 0;
     int char_atk  = 0;

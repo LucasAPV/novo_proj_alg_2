@@ -399,13 +399,13 @@ void actions_for_context(ContextEncounter *context, Party party){
                 printf("Digite o Periodo desejado:\n");
                 printf("1 - QUALQUER HORARIO\n 2 - DIURNO \n 3 - NOTURNO \n");
                 scanf("%d", &p_opt);
-                periodo = (Active) (p_opt--);
+                periodo = (Active) (p_opt-1);
                 Dificulty dificulty;
                 int df_opt = 0;
                 printf("Digite a Dificuldade desejado: \n");
                 printf("1 - FACIL\n 2 - MEDIO \n 3 - DIFICIL \n");
                 scanf("%d", &df_opt);
-                dificulty = (Dificulty) (df_opt--);
+                dificulty = (Dificulty) (df_opt-1);
 
                 printf("Digite o terreno desejado:\n");
                 char terreno[TEXT_SIZE];
