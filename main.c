@@ -11,21 +11,7 @@
 #include "party.h"
 #include "battle.h"
 #include <stdio.h>
-#include <stddef.h>
-/*
-    * Esse macro e para conseguir conferir de forma mais simplificada se uma estrutrura esta vazia ou nao @LucasAPV
-*/
-bool is_zero_bytes(const void* data, size_t size){
-    const unsigned char* bytes = (const unsigned char*) data;
-    for(size_t i = 0; i < size; ++i){
-        if(bytes[i] != 0) {
-            return false;
-        }
-    }
-    return true;
-}
-
-#define is_struct_empty(s) is_zero_bytes(&s, sizeof(s))
+#include <stdlib.h>
 
 int main(void) {
   /* PERSONAGENS */
@@ -47,7 +33,6 @@ int main(void) {
   ContextEncounter context = {0};
   PossibleEncounters encontro = {0};
   int choosed_encounter = -1;
-
   while (1) {
     int option = create_initial_menu();
 
@@ -85,12 +70,12 @@ int main(void) {
     case 7:
       actions_for_encounter(b_candidates, &encontro, &choosed_encounter);
       break;
-        
+
     case 8:
         if(
-            choosed_encounter == -1    || 
+            choosed_encounter == -1    ||
             is_struct_empty(party)     ||
-            is_struct_empty(encontro) 
+            is_struct_empty(encontro)
             )
            {
                printf("\n\nUm dos dados esta faltando!! E necessario a escolha de qual encountro quer e uma party!! \n\n");
@@ -100,7 +85,7 @@ int main(void) {
         bs.p = party;
         bs.encounter = encontro;
         bs.choosed_encounter = choosed_encounter;
-        
+
         /*
             @LucasAPV
             [TODO]
@@ -109,7 +94,7 @@ int main(void) {
                 relevance=Importante
             [\TODO]
         */
-        
+
         actions_for_battle(&bs, c_db);
         break;
     default:

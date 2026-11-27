@@ -4,7 +4,25 @@
 /*
     * Esse macro foi gerado para fazer prints de debug mais facilmente @LucasAPV
 */
+#include <stdbool.h>
 #define debug(fmt, ...) printf("\n[DEBUG] " fmt "\n", ##__VA_ARGS__)
+
+
+#include <stddef.h>
+/*
+    * Esse macro e para conseguir conferir de forma mais simplificada se uma estrutrura esta vazia ou nao @LucasAPV
+*/
+static inline bool is_zero_bytes(const void* data, size_t size){
+    const unsigned char* bytes = (const unsigned char*) data;
+    for(size_t i = 0; i < size; ++i){
+        if(bytes[i] != 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+#define is_struct_empty(s) is_zero_bytes(&s, sizeof(s))
 
 
 #define OKAY (void*)1
