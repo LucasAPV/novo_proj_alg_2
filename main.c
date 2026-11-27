@@ -86,15 +86,6 @@ int main(void) {
         bs.encounter = encontro;
         bs.choosed_encounter = choosed_encounter;
 
-        /*
-            @LucasAPV
-            [TODO]
-                title="Realizar ajustes finos na batalha"
-                desc="Mostrar todas as bestas que estao na batalha, e mostrar tela de derrota ou vitoria, atualizar as vidas da party."
-                relevance=Importante
-            [\TODO]
-        */
-
         actions_for_battle(&bs, c_db);
         break;
     default:
